@@ -23,7 +23,15 @@ const YoutubeForm = () => {
 							type="text"
 							id="username"
 							autoFocus
-							{...register("username", { required: "Username is required" })}
+							{...register("username", {
+								required: "Username is required",
+								validate: (fieldValue) => {
+									return (
+										/[`'";:,.<>/?[]{}()!@#$%^&*-_=+`]/.test(fieldValue) &&
+										"Don't include any special characters"
+									);
+								},
+							})}
 						/>
 					</div>
 					<p className="error">{errors.username?.message}</p>
@@ -35,9 +43,20 @@ const YoutubeForm = () => {
 							type="text"
 							id="email"
 							{...register("email", {
-								pattern: {
-									value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-									message: "Enter valid email id",
+								required: "Email is required",
+								validate: {
+									noOtherDomain: (fieldValue) => {
+										return (
+											/^[A-Z0-9.]+@youtube\.[A-Z]{2}/i.test(fieldValue) ||
+											"This domain is not supported"
+										);
+									},
+									onlyIndianServer: (fieldValue) => {
+										return (
+											/^[A-Z0-9.]+@youtube\.in/i.test(fieldValue) ||
+											"This server is not supported"
+										);
+									},
 								},
 							})}
 						/>
@@ -50,7 +69,15 @@ const YoutubeForm = () => {
 						<input
 							type="text"
 							id="channel"
-							{...register("channel", { required: "Channel name is required" })}
+							{...register("channel", {
+								required: "Channel name is required",
+								validate: (fieldValue) => {
+									return (
+										/[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(fieldValue) &&
+										"Don't include any special characters"
+									);
+								},
+							})}
 						/>
 					</div>
 					<p className="error">{errors.channel?.message}</p>
